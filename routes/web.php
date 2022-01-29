@@ -9,6 +9,8 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckOutController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CouponControler;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +51,18 @@ Route::get('/update-staff/{staff_id}', [AdminController::class ,'update_staff'])
 Route::get('/del-staff/{staff_id}', [AdminController::class ,'del_staff']);
 Route::get('/add-staff', [AdminController::class ,'add_staff']);
 Route::post('/save-staff', [AdminController::class ,'save_staff']);
+Route::get('/print-pdf/{order_id}', [AdminController::class ,'print_pdf']);
+// Route::get('/print-order/{order_id}', [AdminController::class ,'print_order']);
+
+//Coupon
+Route::get('/all-coupon', [CouponControler::class ,'all_coupon']);
+Route::get('/add-coupon', [CouponControler::class ,'add_coupon']);
+Route::post('/save-coupon', [CouponControler::class ,'save_coupon']);
+Route::get('/unActive-coupon/{coupon_id}', [CouponControler::class ,'unActive_coupon']);
+Route::get('/Active-coupon/{coupon_id}', [CouponControler::class ,'Active_coupon']);
+Route::get('/delete-coupon/{coupon_id}', [CouponControler::class ,'delete_coupon']);
+
+
 
 
 
@@ -95,6 +109,9 @@ Route::get('/update-qnt-sub/{product_id}',[CartController::class,'update_qnt_sub
 Route::get('update-qnt-plus/{product_id}',[CartController::class,'update_qnt_plus']);
 Route::get('/delete-cart',[CartController::class,'delete_cart']);
 Route::get('/add-cart/{product_id}',[CartController::class,'add_cart']);
+//Cart -> Coupon
+Route::post('/check-coupon',[CartController::class,'check_coupon']);
+
 
 
 // checkout

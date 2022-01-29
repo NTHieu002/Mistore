@@ -92,7 +92,7 @@
 								<li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
 								<li><a href="{{'history-order'}}"><i class="fa fa-crosshairs"></i>Theo Dõi</a></li>
 								
-								<li><a href="{{'cart'}}"><i class="fa fa-shopping-cart"></i> Cart</a></li>
+								<li><a href="{{URL::to('/cart')}}"><i class="fa fa-shopping-cart"></i> Cart</a></li>
 								<?php 
 									$user_name = session('user_name');
 									if($user_name){ ?>

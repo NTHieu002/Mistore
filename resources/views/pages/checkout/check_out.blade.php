@@ -53,8 +53,9 @@
             <table class="table table-condensed">
                 <?php
                     use Gloudemans\Shoppingcart\Facades\Cart;
+                    
 
-                    $content = Cart::getContent();
+                        $content = Cart::getContent();
                     
                 ?>
                 <thead>
@@ -99,8 +100,28 @@
                     @endforeach
                 </tbody>
             </table>
+            <div class="col-sm-6" style="margin-left: -55px; ">
+                <div class="total_area">
+                    <ul>
+                        @if(Session::get('coupon'))
+                            @foreach(Session::get('coupon') as $cou)
+                                <?php 
+                                    $percent = $cou['coupon_value']/100;
+                                    $subTotal = Cart::getTotal();
+                                    $discount = $subTotal*$percent;
+                                    $total = $subTotal - $discount;
+                                ?>
+                                <li>Giảm Giá <span>{{number_format($discount,0,',','.').'đ'}}</span></li>
+                                <li>Thành Tiền <span>{{number_format($total,0,',','.').'đ'}}</span></li>
+                            @endforeach
+                        @else
+                            <li>Thành Tiền <span>{{number_format(Cart::getTotal(),0,',','.').'đ'}}</span></li>
+                        @endif
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="payment-options">
+        <div class="payment-options col-sm-6" style="right: -75px; top: -20px;">
             <h4>Phương Thức Thanh Toán</h4>
             <form action="{{'save-order'}}" method="get">
                 <span>
@@ -109,6 +130,9 @@
                 <span>
                     <label><input type="radio" name="payment_way" value="2" required> Chuyển Khoản Ngân Hàng</label>
                 </span>
+                <input type="hidden" name="total" value="<?php echo $total?>">
+                <input type="hidden" name="percent" value="<?php echo $percent ?>">
+                <input type="hidden" name="discount" value="<?php echo $discount ?>">
                 <span>
                     <button class="btn btn-default delete" type="summit">ĐỒNG Ý ĐẶT HÀNG</button>
                 </span>

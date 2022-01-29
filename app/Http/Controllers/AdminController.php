@@ -8,6 +8,9 @@ use App\Http\Requests;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Route;
+use Barryvdh\DomPDF\PDF;
+use Illuminate\Support\Facades\App;
 session_start();
 
 class AdminController extends Controller
@@ -162,4 +165,104 @@ class AdminController extends Controller
         Session::put('message','đã Thêm nhân viên');
         return Redirect::to('all-staff');
     }
+
+    //PDF
+    public function print_pdf($order_id) {
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($this->print_order($order_id));
+        return $pdf->stream();
+    }
+
+    public function print_order($order_id) {
+        $order_details = DB::table('tbl_order_details')->join('tbl_products','tbl_products.product_id','=','tbl_order_details.product_id')
+        ->join('tbl_images_product','tbl_images_product.product_id','=','tbl_products.product_id')
+        ->where('tbl_order_details.order_id',$order_id)->get();
+
+
+        $customer_info = DB::table('tbl_orders')->join('tbl_users','tbl_users.user_id','=','tbl_orders.user_id')
+        ->join('tbl_address','tbl_address.user_id','=','tbl_users.user_id')
+        ->where('tbl_orders.order_id',$order_id)->first();
+
+        $total = DB::table('tbl_orders')->where('tbl_orders.order_id',$order_id)->value('order_total');
+
+        $output = ' ';
+        $output .= "
+            <style> body {
+                        font-family: Dejavu Sans
+                    }
+                    th {
+                        text-align: left;
+                    }
+                    .tb_styling tr td{
+                        border:1px solid  #000;
+                    }
+                    .tb_styling thead th{
+                        border:1px solid  #000;
+                        text-align: center;
+                    }
+                    .tb_styling {
+                        width: 100%;
+                        text-align: center;
+                    }
+            </style>
+            <h1><center>CỬA HÀNG SMART PHONE MISTORE</center></h1>
+            <h2><center>Hóa Đơn</center></h2>
+            <h3>Thông Tin Khách Hàng</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Họ Tên KH: </th>
+                        <td>$customer_info->user_name</td>
+                    </tr>
+                    <tr>
+                        <th>SDT: </th>
+                        <td>$customer_info->user_phone</td>
+                    </tr>
+                    <tr>
+                        <th>Email: </th>
+                        <td>$customer_info->user_email</td>
+                    </tr>
+                    <tr>
+                        <th>Địa Chỉ: </th>
+                        <td>$customer_info->address</td>
+                    </tr>
+                </thead>
+            </table>
+            <h3>Thông Tin Sản Phẩm</h3>
+            <table class = 'tb_styling'>
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên Sẩn Phẩm</th>
+                        <th>Giá</th>
+                        <th>Số Lượng</th>
+                        <th>Giảm Giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+               
+        ";
+        foreach($order_details as $details_value) {
+            $i=0;
+            $i = $i+1;
+            $output .= "
+                <tr>
+                    <td>$i</td>
+                    <td>$details_value->product_name</td>
+                    <td>$details_value->product_price đ</td>
+                    <td>$details_value->details_quantity</td>
+                    <td>$details_value->details_discount đ</td>
+                </tr>
+            ";
+        }
+
+        $output .= " 
+             </tbody>
+            </table>
+            <h3>Tổng: $total đ </h3>
+            <h3 style='float: right; margin-right:100px'>Ký Tên</h3>
+        ";
+        return $output;
+    }   
+
 }

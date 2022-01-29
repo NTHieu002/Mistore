@@ -82,20 +82,25 @@
                 <h3>General</h3>
                 <ul class="nav side-menu">
                   <li>
-                    <a>
-                      <i class="fa fa-home"></i> Home
+                    <a><i class="fa fa-home"></i> Home
                       <span class="fa fa-chevron-down"></span>
                     </a>
                     <ul class="nav child_menu">
-
-                      <li><a href="{{URL::to('manage-order')}}">Quản lý Đơn Hàng</a></li>
+                      <li><a href="{{URL::to('manage-order')}}">Quản Lý Đơn Hàng</a></li>
                     </ul>
                   </li>
                   <li>
-                    <a
-                      ><i class="fa fa-edit"></i> Quản lý Thương Hiệu
-                      <span class="fa fa-chevron-down"></span
-                    ></a>
+                    <a><i class="fa fa-tags"></i> Quản Lý Coupon
+                      <span class="fa fa-chevron-down"></span>
+                    </a>
+                    <ul class="nav child_menu">
+                      <li><a href="{{URL::to('all-coupon')}}">Liệt Kê Mã Coupon</a></li>
+                      <li><a href="{{URL::to('add-coupon')}}">Thêm Mã Coupon</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a><i class="fa fa-edit"></i> Quản Lý Thương Hiệu
+                      <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="{{URL::to('all-brand')}}">Liệt Kê Thương Hiệu Sản Phẩm</a></li>
                       <li><a href="{{URL::to('add-brand')}}">Thêm Thương Hiệu Sản Phẩm</a></li>
@@ -103,7 +108,7 @@
                   </li>
                   <li>
                     <a><i class="fa fa-indent"></i> &nbsp; 
-                      Quản lý Danh Mục 
+                      Quản Lý Danh Mục 
                       <span class="fa fa-chevron-down"></span>
                     </a>
                     <ul class="nav child_menu">
@@ -113,7 +118,7 @@
                   </li>
                   <li>
                     <a><i class="fa fa-edit"></i> 
-                      Quản lý Sản Phẩm
+                      Quản Lý Sản Phẩm
                       <span class="fa fa-chevron-down"></span>
                     </a>
                     <ul class="nav child_menu">
@@ -126,7 +131,7 @@
                     if($permission < 2) { ?>
                       <li>
                         <a><i class="fa fa-users"></i> &nbsp;
-                            Quản lý Nhân sự
+                            Quản Lý Nhân sự
                           <span class="fa fa-chevron-down"></span>
                         </a>
                         <ul class="nav child_menu">

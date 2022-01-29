@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Session;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Darryldecode\Cart\Facades\CartFacade;
 use Illuminate\Support\Arr;
-
+use App\Models\Coupon;
 session_start();
 class CartController extends Controller
 {
@@ -78,4 +78,31 @@ class CartController extends Controller
         Cart::Clear();
         return Redirect::to('cart');
     }
+
+    //Coupon
+    public function check_coupon(Request $request) {
+        $data = $request->all();
+        $coupon = Coupon::where('coupon_code',$data['coupon_code'])->first();
+        if($coupon) {
+            $count_coupon = $coupon->count();
+            if($count_coupon>0) {
+                $cou[] = array(
+                    'coupon_code' => $coupon->coupon_code,
+                    'coupon_value' => $coupon->coupon_value, 
+                );
+                Session::put('coupon',$cou);
+                Session::save();
+            }
+            return redirect()->back()->with('message','Áp dụng mã thành công');
+        }else {
+            $cou[] = array(
+                'coupon_code' => ' ',
+                'coupon_value' => 0, 
+            );
+            Session::put('coupon',$cou);
+            Session::save();
+            return redirect()->back()->with('message','Mã Không Tồn Tại');
+        }
+    }
+
 }

@@ -79,24 +79,38 @@ class CheckOutController extends Controller
             $data_order['user_id']  = $value->user_id;
             $data_order['day_order']  = $date;
         }
-
+        $total = $request->total;
+        $data_order['order_total'] = $total;
         $data_order['order_status'] = 0;
-        $data_order['order_total'] = Cart::getTotal();
         $data_order['payment'] = $request->payment_way;
+        
         // insert tbl order
         $order_id = DB::table('tbl_orders')->insertGetId($data_order);
 
 
         // insert order details
         $cart_content = Cart::getContent();
-        $details_data = array();
-        foreach($cart_content as $value) {
-            $details_data['order_id']  = $order_id;
-            $details_data['product_id']  = $value->id;
-            $details_data['details_quantity']  = $value->quantity;
-            $details_data['details_price']  = $value->price;
-            $details_data['details_discount'] = 0;
-            DB::table('tbl_order_details')->insert($details_data);
+        $discount = $request->discount;
+        if($discount > 0) {
+            $details_data = array();
+            foreach($cart_content as $value) {
+                $details_data['order_id']  = $order_id;
+                $details_data['product_id']  = $value->id;
+                $details_data['details_quantity']  = $value->quantity;
+                $details_data['details_price']  = ($value->price - $discount);
+                $details_data['details_discount'] = $discount;
+                DB::table('tbl_order_details')->insert($details_data);
+            }
+        } else {
+            $details_data = array();
+            foreach($cart_content as $value) {
+                $details_data['order_id']  = $order_id;
+                $details_data['product_id']  = $value->id;
+                $details_data['details_quantity']  = $value->quantity;
+                $details_data['details_price']  = $value->price;
+                $details_data['details_discount'] = 0;
+                DB::table('tbl_order_details')->insert($details_data);
+            }
         }
         Cart::clear();
         return Redirect::to('home');

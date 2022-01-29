@@ -163,6 +163,8 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         //Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class,
         Darryldecode\Cart\CartServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -232,7 +234,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         //'Cart' => Gloudemans\Shoppingcart\Facades\Cart::class,
         'Cart' => Darryldecode\Cart\Facades\CartFacade::class,
-
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ],
 
 ];

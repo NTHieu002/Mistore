@@ -54,6 +54,12 @@
                         <td>Phone: </td>
                         <td style="padding-left: 20px;">{{$customer_value->user_phone}}</td>
                     </tr>
+                    @foreach($order_details as $details_value)
+                    <tr>
+                        <td>Giảm Giá: </td>
+                        <td style="padding-left: 20px;">{{number_format($details_value->details_discount,0,',','.').'đ'}}</td>
+                    </tr>
+                    @endforeach
                     <tr>
                         <td>Địa chỉ: </td>
                         <td style="padding-left: 20px;">{{$customer_value->address}}</td>
@@ -113,8 +119,10 @@
                   <option  value="2">Đã hoàn thành</option>
                 </select>
                 <button  class="btn btn-primary btn-xs" type="submit" name="update_btn" >Cập Nhật</button>
-            </form>
-           
+              </form>
+              <a class="btn btn-primary btn-xs" target="_blank" href="{{URL::to('/print-pdf/'.$details_value->details_id)}}" name="update_btn" style="float: right;">
+                Xuất PDF
+              </a>
             <!-- end project list -->
             <?php
                 use Illuminate\Support\Facades\Session;

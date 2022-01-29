@@ -14,12 +14,6 @@
                     use Gloudemans\Shoppingcart\Facades\Cart;
 
                     $content = Cart::getContent();
-                    // echo '<pre>';
-                    // print_r($content);
-                    
-                    // echo '</pre>';
-                  
-                    
                 ?>
                 <thead>
                     <tr class="cart_menu">
@@ -76,16 +70,6 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="chose_area">
-                    <ul class="user_option">
-                        <li>
-                            <input type="checkbox">
-                            <label>Dùng mã mua hàng</label>
-                        </li>
-                        <li>
-                            <input type="checkbox">
-                            <label>Dùng phiếu quà tặng</label>
-                        </li>
-                    </ul>
                     <ul class="user_info">
                         <li class="single_field">
                             <label>Mã vận chuyển</label>
@@ -98,14 +82,22 @@
                         </li>
                     </ul>
                     <ul class="user_info" >
-                        <li class="single_field zip-field" style="width: 150px;">
+                        <form action="{{URL::to('/check-coupon')}}" method="post" class="single_field zip-field" style="width: 250px;">
+                            @csrf()
                             <label>Mã Giảm Giá:</label>
-                            <input type="text">
-                        </li>
-
+                            <input type="text" name="coupon_code" placeholder="Nhập Mã...">
+                            <button type="submit" class="btn btn-default check_out" style="margin-left: 0;">Áp Dụng</button>
+                        </form>
+                        <br>
+                        <?php
+                            use Illuminate\Support\Facades\Session;
+                            $mess = Session::get('message');
+                            if($mess) {
+                                echo $mess;
+                                Session::put('message',null);
+                            }
+                        ?>
                     </ul>
-                    <a class="btn btn-default update" href="">Get Quotes</a>
-                    <a class="btn btn-default check_out" href="">Continue</a>
                 </div>
             </div>
             <div class="col-sm-6">
@@ -114,9 +106,23 @@
                         <li>Tổng <span>{{number_format(Cart::getTotal(),0,',','.').'đ'}}</span></li>
                         <li>Thuế <span>0 đ</span></li>
                         <li>Vận Chuyển <span>Free</span></li>
-                        <li>Thành Tiền <span>{{number_format(Cart::getSubTotal(),0,',','.').'đ'}}</span></li>
+                        @if(Session::get('coupon'))
+                            @foreach(Session::get('coupon') as $cou)
+                                <?php 
+                                    $percent = $cou['coupon_value']/100;
+                                    $subTotal = Cart::getTotal();
+                                    $discount = $subTotal*$percent;
+                                    $total = $subTotal - $discount;
+                                ?>
+                                <li>Giảm Giá <span>{{number_format($discount,0,',','.').'đ'}}</span></li>
+                            @endforeach
+                            <li>Thành Tiền <span>{{number_format($total,0,',','.').'đ'}}</span></li>
+                        @else
+                            <li>Thành Tiền <span>{{number_format(Cart::getTotal(),0,',','.').'đ'}}</span></li>
+                        @endif
+                        
                     </ul>
-                        <a class="btn btn-default update" href="{{'login-checkout'}}">Thanh Toán</a>
+                    <a class="btn btn-default update" href="{{'login-checkout'}}">Thanh Toán</a>
                 </div>
             </div>
         </div>
