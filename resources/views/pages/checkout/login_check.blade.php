@@ -53,7 +53,7 @@
               </div>
             </form>
             <div class="" style="display: flex; justify-content: space-between; margin: 0 40px;" >
-              <a style="font-size: 20px;" href=""><i class="fa fa-facebook-square"> Facebook</i></a>
+              <a style="font-size: 20px;" href="{{url::to('/login-social/facebook')}}"><i class="fa fa-facebook-square"> Facebook</i></a>
               <a style="font-size: 20px;" href=""><i class="fa fa-google"> Google</i></a>
             </div>
 

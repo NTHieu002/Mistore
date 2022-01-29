@@ -10,6 +10,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckOutController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CouponControler;
+use App\Http\Controllers\SocialateController;
 
 
 /*
@@ -126,4 +127,8 @@ Route::get('/history-order',[CustomerController::class,'history_order']);
 Route::get('/history-details/{order_id}',[CustomerController::class,'history_details']);
 Route::get('/history-del/{order_id}',[CustomerController::class,'history_del']);
 
+
+//social login
+Route::get('/login-social/{social}',[SocialateController::class,'login_fb']);
+Route::get('/check-info/{social}',[SocialateController::class,'check_info']);
 
