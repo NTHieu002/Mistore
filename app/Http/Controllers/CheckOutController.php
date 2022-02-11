@@ -18,14 +18,29 @@ class CheckOutController extends Controller
 {
     public function login_checkout() {
 
-        if(session('user_name')) {
-            $category_product = DB::table('tbl_category_product')->where('category_status',1)->orderby('category_id')->get();
-            $category_brand = DB::table('tbl_brands')->where('brand_status',1)->orderby('brand_id')->get();
+        $category_product = DB::table('tbl_category_product')->where('category_status',1)->orderby('category_id')->get();
+        $category_brand = DB::table('tbl_brands')->where('brand_status',1)->orderby('brand_id')->get();
+        
+        if(session('user_name') and !session('provider')) {
             $user_email = session('user_email');
             $user_name = session('user_name');
             $user_info = DB::table('tbl_users')->join('tbl_address','tbl_address.user_id','=','tbl_users.user_id')
             ->where('tbl_users.user_name',$user_name)->where('tbl_users.user_email',$user_email)->get();
             Session::put('user_info',$user_info);
+            return view('pages.checkout.check_out')->with('category_product',$category_product)->with('category_brand',$category_brand)
+            ->with('user_info',$user_info);
+        } else if(session('provider')){
+            $user_email = session('user_email');
+            $user_name = session('user_name');
+            $user_info = DB::table('tbl_social')->where('user_name',$user_name)->where('user_email',$user_email)->get();
+            if($user_info) {
+                $user_info = DB::table('tbl_users')->join('tbl_address','tbl_address.user_id','=','tbl_users.user_id')
+                ->where('tbl_users.user_name',$user_name)->where('tbl_users.user_email',$user_email)->get();
+                Session::put('user_info',$user_info);
+                Session::put('check_login',true);
+            } else {
+                Session::put('user_info',$user_info);
+            }
             return view('pages.checkout.check_out')->with('category_product',$category_product)->with('category_brand',$category_brand)
             ->with('user_info',$user_info);
         } else {
@@ -71,8 +86,60 @@ class CheckOutController extends Controller
         return Redirect::to('login-checkout');
     }
 
+    
+    public function save_order_user(Request $request) {
+        $user_email = session('user_email');
+        $user_name = session('user_name');
+        $check_user = DB::table('tbl_social')->where('tbl_users.user_name',$user_name)->where('tbl_users.user_email',$user_email)->first();
+        if($check_user) {
+            $user_info = DB::table('tbl_users')->join('tbl_address','tbl_address.user_id','=','tbl_users.user_id')
+            ->where('tbl_users.user_name',$user_name)->where('tbl_users.user_email',$user_email)->get();
+            Session::put('user_info',$user_info);
+            return Redirect::to('login-checkout')->with('user_info',$user_info);
+        } else {
+            $data_user_info = array();
+            $data_user_info['user_phone'] = $request->phone;
+            $data_user_info['user_name'] = $request->name;
+            $data_user_info['user_email'] = $request->email;
+            $data_user_info['user_password'] = ' ';
+            $address = $request->address;
+            $user_id = DB::table('tbl_users')->insertGetId($data_user_info);
+            DB::table('tbl_address')->insert([
+                'user_id' => $user_id,
+                'address' => $address
+            ]);
+            
+            return Redirect::to('login-checkout');
+        }
+    }
+
+
+
     public function save_order(Request $request) {
-        $user_info = session('user_info');
+        $user_email = session('user_email');
+        $user_name = session('user_name');
+        $user_info = DB::table('tbl_users')->join('tbl_address','tbl_address.user_id','=','tbl_users.user_id')
+        ->where('tbl_users.user_name',$user_name)->where('tbl_users.user_email',$user_email)->get();
+        if(session('provider')) {
+            
+            $date = Carbon::now()->toDateString();
+            $data_order = array(); 
+            foreach($user_info as $value) {
+                $data_order['user_id']  = $value->user_id;
+                $data_order['day_order']  = $date;
+            }
+            $total = $request->total;
+            if($total) {
+                $data_order['order_total'] = $total;
+            } else {
+                $data_order['order_total'] = Cart::getTotal() ;
+            }
+            $data_order['order_status'] = 0;
+            $data_order['payment'] = $request->payment_way;
+            
+        }
+        //insert
+
         $date = Carbon::now()->toDateString();
         $data_order = array(); 
         foreach($user_info as $value) {
@@ -80,7 +147,11 @@ class CheckOutController extends Controller
             $data_order['day_order']  = $date;
         }
         $total = $request->total;
-        $data_order['order_total'] = $total;
+        if($total) {
+            $data_order['order_total'] = $total;
+        } else {
+            $data_order['order_total'] = Cart::getTotal() ;
+        }
         $data_order['order_status'] = 0;
         $data_order['payment'] = $request->payment_way;
         

@@ -175,13 +175,13 @@ class AdminController extends Controller
 
     public function print_order($order_id) {
         $order_details = DB::table('tbl_order_details')->join('tbl_products','tbl_products.product_id','=','tbl_order_details.product_id')
-        ->join('tbl_images_product','tbl_images_product.product_id','=','tbl_products.product_id')
         ->where('tbl_order_details.order_id',$order_id)->get();
 
 
         $customer_info = DB::table('tbl_orders')->join('tbl_users','tbl_users.user_id','=','tbl_orders.user_id')
         ->join('tbl_address','tbl_address.user_id','=','tbl_users.user_id')
-        ->where('tbl_orders.order_id',$order_id)->first();
+        ->join('tbl_order_details','tbl_order_details.order_id','=','tbl_orders.order_id')
+        ->where('tbl_order_details.details_id',$order_id)->first();
 
         $total = DB::table('tbl_orders')->where('tbl_orders.order_id',$order_id)->value('order_total');
 

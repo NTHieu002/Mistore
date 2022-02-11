@@ -21,16 +21,19 @@
                     <div class="bill-to">
                         <p>Thông Tin Nhận Hàng</p>
                         <div class="form-one">
-                            <form method="post" action="{{'save-order'}}">
+                            <form method="get" action="{{'save-order-user'}}">
                                 @foreach($user_info as $value)
                                 Họ Tên:
-                                <input type="text" value="{{$value->user_name}}" >
+                                <input type="text" value="{{$value->user_name}}" require name="name" >
                                 Email:
-                                <input type="text" value="{{$value->user_email}}">
+                                <input type="text" value="{{$value->user_email}}" require name="email">
                                 SDT:
-                                <input type="text" value="{{$value->user_phone}}">
+                                <input type="text" value="{{$value->user_phone}}" require name="phone" >
                                 Địa Chỉ:
-                                <input type="text" value="{{$value->address}}">
+                                <input type="text" value="{{$value->address}}" require name="address">
+                                @if(session('provider') && !session('check_login'))
+                                <button class="btn btn-default delete" type="summit">Confirm</button>
+                                @endif
                                 @endforeach
                             </form>
                         </div>
@@ -130,9 +133,11 @@
                 <span>
                     <label><input type="radio" name="payment_way" value="2" required> Chuyển Khoản Ngân Hàng</label>
                 </span>
-                <input type="hidden" name="total" value="<?php echo $total?>">
-                <input type="hidden" name="percent" value="<?php echo $percent ?>">
-                <input type="hidden" name="discount" value="<?php echo $discount ?>">
+                @if(Session::get('coupon'))
+                    <input type="hidden" name="total" value="<?php echo $total?>">
+                    <input type="hidden" name="percent" value="<?php echo $percent ?>">
+                    <input type="hidden" name="discount" value="<?php echo $discount ?>">
+                @endif
                 <span>
                     <button class="btn btn-default delete" type="summit">ĐỒNG Ý ĐẶT HÀNG</button>
                 </span>

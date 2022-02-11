@@ -121,6 +121,7 @@ Route::post('/resister-account',[CheckOutController::class,'resister_account']);
 Route::get('/index',[CheckOutController::class,'index']);
 Route::get('/log-out',[CheckOutController::class,'log_out']);
 Route::get('/save-order',[CheckOutController::class,'save_order']);
+Route::get('/save-order-user',[CheckOutController::class,'save_order_user']);
 
 //customer
 Route::get('/history-order',[CustomerController::class,'history_order']);
@@ -132,3 +133,5 @@ Route::get('/history-del/{order_id}',[CustomerController::class,'history_del']);
 Route::get('/login-social/{social}',[SocialateController::class,'login_fb']);
 Route::get('/check-info/{social}',[SocialateController::class,'check_info']);
 
+Route::get('/login-social/{social}',[SocialateController::class,'login_gg']);
+Route::get('/auth/google/callback',[SocialateController::class,'call_back_gg']);
