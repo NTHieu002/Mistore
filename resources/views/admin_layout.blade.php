@@ -28,6 +28,7 @@
 
     <!-- Custom Theme Style -->
     <link href="{{asset('public/backend/build/css/custom.min.css')}}" rel="stylesheet">
+    <meta name="csrf-token" content="{{csrf_token()}}">
   </head>
 
   <body class="nav-md">
@@ -87,6 +88,7 @@
                     </a>
                     <ul class="nav child_menu">
                       <li><a href="{{URL::to('manage-order')}}">Quản Lý Đơn Hàng</a></li>
+                      <li><a href="{{URL::to('manage-comment')}}">Quản Lý Bình Luận</a></li>
                     </ul>
                   </li>
                   <li>
@@ -361,6 +363,26 @@
 
     <!-- Custom Theme Scripts -->
     <script src="{{asset('public/backend/build/js/custom.min.js')}}"></script>
+    <script type="text/javascript">
+      $('.btn-rep-cmt').click(function(){
+        var comment_id = $(this).data('comment_id');
+        var comment = $('.rep-comment_'+comment_id).val();
+        var comment_product_id = $(this).data('product_id');
+
+        $.ajax({
+          url:"{{url('/reply-comment')}}",
+          method:"POST",
+          headers: {
+            'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+          },
+          data:{comment:comment, comment_id:comment_id, comment_product_id:comment_product_id},
+          success:function(data) {
+            var comment = $('.rep-comment_'+comment_id).val(' ');
+            $('#notify_cmt').html('<span class="text text-alert">Trả lời thành công</span>');
+          }
+        });
+      });
+    </script>
 	
   </body>
 </html>

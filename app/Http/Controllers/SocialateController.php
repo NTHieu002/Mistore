@@ -32,7 +32,6 @@ class SocialateController extends Controller
 
     public function call_back_gg() {
         $provider = Socialite::driver('google')->user();
-        //dd($provider);
         if($provider) {
             $user_info = DB::table('tbl_social')->where('provider_user_id',$provider->id)->first();
             if($user_info) {
@@ -47,8 +46,6 @@ class SocialateController extends Controller
                 $user_social->user_email = $provider->email;
                 $user_social->provider = 'google';
                 $user_social->user_name = $provider->name;
-                $user_social->user_phone = ' ';
-                $user_social->address = ' ';
                 $user_social->save();
                 Session::put('user_name',$provider->name);
                 Session::put('user_email',$provider->email);

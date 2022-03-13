@@ -18,34 +18,33 @@ class CheckOutController extends Controller
 {
     public function login_checkout() {
 
-        $category_product = DB::table('tbl_category_product')->where('category_status',1)->orderby('category_id')->get();
-        $category_brand = DB::table('tbl_brands')->where('brand_status',1)->orderby('brand_id')->get();
-        
-        if(session('user_name') and !session('provider')) {
+        if(!session('user_name') && !session('user_email')) {
+            return view('pages.checkout.login_check');
+        } else {
+            $category_product = DB::table('tbl_category_product')->where('category_status',1)->orderby('category_id')->get();
+            $category_brand = DB::table('tbl_brands')->where('brand_status',1)->orderby('brand_id')->get();
             $user_email = session('user_email');
             $user_name = session('user_name');
-            $user_info = DB::table('tbl_users')->join('tbl_address','tbl_address.user_id','=','tbl_users.user_id')
-            ->where('tbl_users.user_name',$user_name)->where('tbl_users.user_email',$user_email)->get();
-            Session::put('user_info',$user_info);
-            return view('pages.checkout.check_out')->with('category_product',$category_product)->with('category_brand',$category_brand)
-            ->with('user_info',$user_info);
-        } else if(session('provider')){
-            $user_email = session('user_email');
-            $user_name = session('user_name');
-            $user_info = DB::table('tbl_social')->where('user_name',$user_name)->where('user_email',$user_email)->get();
-            if($user_info) {
+            
+            if(!session('provider')) {
                 $user_info = DB::table('tbl_users')->join('tbl_address','tbl_address.user_id','=','tbl_users.user_id')
                 ->where('tbl_users.user_name',$user_name)->where('tbl_users.user_email',$user_email)->get();
                 Session::put('user_info',$user_info);
-                Session::put('check_login',true);
-            } else {
-                Session::put('user_info',$user_info);
+                return view('pages.checkout.check_out')->with('category_product',$category_product)->with('category_brand',$category_brand)
+                ->with('user_info',$user_info);
+            } else if(session('provider')){
+                $check_user = DB::table('tbl_users')->where('user_name',$user_name)->where('user_email',$user_email)->first();
+                if($check_user) {
+                    $user_info_provider = DB::table('tbl_users')->join('tbl_address','tbl_address.user_id','=','tbl_users.user_id')
+                    ->where('tbl_users.user_name',$user_name)->where('tbl_users.user_email',$user_email)->get();
+                    return view('pages.checkout.check_out')->with('user_info',$user_info_provider)->with('category_product',$category_product)->with('category_brand',$category_brand);
+                } else {
+                    Session::put('check_first_login',true);
+                    return view('pages.checkout.check_out')->with('user_name',$user_name)->with('user_email',$user_email)
+                    ->with('category_product',$category_product)->with('category_brand',$category_brand);
+                }
             }
-            return view('pages.checkout.check_out')->with('category_product',$category_product)->with('category_brand',$category_brand)
-            ->with('user_info',$user_info);
-        } else {
-            return view('pages.checkout.login_check');
-        }
+        } 
     }
     
     public function log_out() {
@@ -88,15 +87,6 @@ class CheckOutController extends Controller
 
     
     public function save_order_user(Request $request) {
-        $user_email = session('user_email');
-        $user_name = session('user_name');
-        $check_user = DB::table('tbl_social')->where('tbl_users.user_name',$user_name)->where('tbl_users.user_email',$user_email)->first();
-        if($check_user) {
-            $user_info = DB::table('tbl_users')->join('tbl_address','tbl_address.user_id','=','tbl_users.user_id')
-            ->where('tbl_users.user_name',$user_name)->where('tbl_users.user_email',$user_email)->get();
-            Session::put('user_info',$user_info);
-            return Redirect::to('login-checkout')->with('user_info',$user_info);
-        } else {
             $data_user_info = array();
             $data_user_info['user_phone'] = $request->phone;
             $data_user_info['user_name'] = $request->name;
@@ -108,12 +98,20 @@ class CheckOutController extends Controller
                 'user_id' => $user_id,
                 'address' => $address
             ]);
-            
-            return Redirect::to('login-checkout');
-        }
+            return Redirect::to('/call-back-check-out');
     }
 
-
+    public function call_back_checkout() {
+        $category_product = DB::table('tbl_category_product')->where('category_status',1)->orderby('category_id')->get();
+        $category_brand = DB::table('tbl_brands')->where('brand_status',1)->orderby('brand_id')->get();
+        $user_email = session('user_email');
+        $user_name = session('user_name');
+        $user_info = DB::table('tbl_users')->join('tbl_address','tbl_address.user_id','=','tbl_users.user_id')
+                ->where('tbl_users.user_name',$user_name)->where('tbl_users.user_email',$user_email)->get();
+        Session::put('check_first_login',false);
+        return view('pages.checkout.check_out')->with('user_info',$user_info)->with('message','Cập Nhật SDT và Địa Chỉ')
+        ->with('category_product',$category_product)->with('category_brand',$category_brand);
+    }
 
     public function save_order(Request $request) {
         $user_email = session('user_email');

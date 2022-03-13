@@ -11,6 +11,8 @@ use App\Http\Controllers\CheckOutController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CouponControler;
 use App\Http\Controllers\SocialateController;
+use App\Http\Controllers\CommentController;
+
 
 
 /*
@@ -101,7 +103,13 @@ Route::get('/active-product/{product_id}',[ProductsController::class,'active_pro
 Route::get('/update-product/{product_id}',[ProductsController::class,'update_product']);
 Route::get('/product-detail/{product_id}', [ProductsController::class ,'product_detail']);
 
-
+//comment
+Route::post('/load-comment',[CommentController::class,'load_comment']);
+Route::post('/send-comment',[CommentController::class,'send_comment']);
+Route::get('/manage-comment',[CommentController::class,'manage_comment']);
+Route::get('/confirm-comment/{comment_id}',[CommentController::class,'confirm_comment']);
+Route::get('/del-comment/{comment_id}',[CommentController::class,'del_comment']);
+Route::post('/reply-comment',[CommentController::class,'reply_comment']);
 // Cart
 Route::post('/save-cart/{product_id}',[CartController::class,'save_cart']);
 Route::get('/cart',[CartController::class,'show_cart']);
@@ -122,7 +130,7 @@ Route::get('/index',[CheckOutController::class,'index']);
 Route::get('/log-out',[CheckOutController::class,'log_out']);
 Route::get('/save-order',[CheckOutController::class,'save_order']);
 Route::get('/save-order-user',[CheckOutController::class,'save_order_user']);
-
+Route::get('/call-back-check-out',[CheckOutController::class,'call_back_checkout']);
 //customer
 Route::get('/history-order',[CustomerController::class,'history_order']);
 Route::get('/history-details/{order_id}',[CustomerController::class,'history_details']);

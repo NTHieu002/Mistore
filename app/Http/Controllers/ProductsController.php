@@ -8,6 +8,7 @@ use App\Http\Requests;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
+use App\Models\Comment;
 session_start();
 class ProductsController extends Controller
 {
@@ -118,4 +119,5 @@ class ProductsController extends Controller
         ->with('product',$product)->with('relate_product',$relate_product)->with('tag_product',$tag_product);
     }
 
+    
 }

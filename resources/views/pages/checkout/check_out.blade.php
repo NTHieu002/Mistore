@@ -22,19 +22,36 @@
                         <p>Thông Tin Nhận Hàng</p>
                         <div class="form-one">
                             <form method="get" action="{{'save-order-user'}}">
-                                @foreach($user_info as $value)
-                                Họ Tên:
-                                <input type="text" value="{{$value->user_name}}" require name="name" >
-                                Email:
-                                <input type="text" value="{{$value->user_email}}" require name="email">
-                                SDT:
-                                <input type="text" value="{{$value->user_phone}}" require name="phone" >
-                                Địa Chỉ:
-                                <input type="text" value="{{$value->address}}" require name="address">
-                                @if(session('provider') && !session('check_login'))
-                                <button class="btn btn-default delete" type="summit">Confirm</button>
+                                <?php
+                                    $first_login = session('check_first_login');
+                                    $user_name = session('user_name');
+                                    $user_mail = session('user_email');
+                                ?>
+                                
+                                @if(!$first_login)
+                                    @foreach($user_info as $value)
+                                    Họ Tên:
+                                    <input type="text" value="{{$value->user_name}}" require name="name" >
+                                    Email:
+                                    <input type="text" value="{{$value->user_email}}" require name="email">
+                                    SDT:
+                                    <input type="text" value="{{$value->user_phone}}" require name="phone" >
+                                    Địa Chỉ:
+                                    <input type="text" value="{{$value->address}}" require name="address">
+                                    @endforeach
+                                @else
+                                    Họ Tên:
+                                    <input type="text" value="{{$user_name}}" require name="name" >
+                                    Email:
+                                    <input type="text" value="{{$user_email}}" require name="email">
+                                    SDT:
+                                    <input type="text" value="" require name="phone" >
+                                    Địa Chỉ:
+                                    <input type="text" value="" require name="address">
+                                    <button type="submit" class="btn btn-default delete">confirm</button>
                                 @endif
-                                @endforeach
+
+                                
                             </form>
                         </div>
                     </div>

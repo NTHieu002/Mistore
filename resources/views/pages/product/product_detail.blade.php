@@ -50,13 +50,13 @@
 <div class="category-tab shop-details-tab">
     <div class="col-sm-12">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
+            <li ><a href="#details" data-toggle="tab">Details</a></li>
             <li><a href="#tag" data-toggle="tab">Tag</a></li>
-            <li><a href="#reviews" data-toggle="tab">Reviews (5)</a></li>
+            <li class="active"><a href="#reviews" data-toggle="tab">Reviews (5)</a></li>
         </ul>
     </div>
     <div class="tab-content">
-        <div class="tab-pane fade  active in" id="details" >
+        <div class="tab-pane fade  in" id="details" >
             <h4 style="margin-left: 30px;">Chi Tiết Sản Phẩm</h4>
             <p style="margin-left: 50px;">{{ $value->product_desc}}</p>
             <!--recommended_items-->
@@ -124,26 +124,34 @@
             </div>
             @endforeach
         </div>
-        <div class="tab-pane fade" id="reviews" >
+        <div class="tab-pane fade  active in" id="reviews" >
             <div class="col-sm-12">
                 <ul>
                     <li><a href=""><i class="fa fa-user"></i>EUGEN</a></li>
                     <li><a href=""><i class="fa fa-clock-o"></i>12:41 PM</a></li>
                     <li><a href=""><i class="fa fa-calendar-o"></i>31 DEC 2014</a></li>
                 </ul>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                <form action="">
+                    @csrf
+                    <input type="hidden" name="cmt_product_id" class="cmt_product_id" value="{{$value->product_id}}">
+                    <div id="comment_show"></div>
+                </form>
+
+                <div id="notify_cmt"></div>
                 <p><b>Write Your Review</b></p>
                 
                 <form action="#">
+                    <!-- @csrf -->
                     <span>
-                        <input type="text" placeholder="Your Name"/>
+                        <input name="comment_name" class="comment_name" type="text" placeholder="Your Name"/>
                         <input type="email" placeholder="Email Address"/>
                     </span>
-                    <textarea name="" ></textarea>
+                    <textarea name="comment_content" class="comment_content" placeholder="Viết bình luận sản phẩm của bạn tại đây" ></textarea>
                     <b>Rating: </b> <img src="{{URL::to('public/frontend/images/rating.png')}}" alt="" />
-                    <button type="button" class="btn btn-default pull-right">
-                        Submit
+                    <button type="button" class="btn btn-default pull-right send-comment">
+                        Gửi Bình Luận
                     </button>
+                    
                 </form>
             </div>
         </div>

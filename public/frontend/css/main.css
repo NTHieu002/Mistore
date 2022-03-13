@@ -2545,4 +2545,12 @@ h2.title {
   color: #e05e2c;
 }
 
+.style_cmt {
+  border: 1px solid #F7F7F0;
+  background: #F0F0E9;
+  justify-content: left;
+  margin-bottom: 10px;
+  
+}
+
 

@@ -442,5 +442,45 @@
 	<script  type="text/javascript" src="{{asset('/public/frontend/js/price-range.js')}}"></script>
     <script  type="text/javascript" src="{{asset('/public/frontend/js/jquery.prettyPhoto.js')}}"></script>
     <script  type="text/javascript" src="{{asset('/public/frontend/js/main.js')}}"></script>
+	<!-- script for comment -->
+	<script  type="text/javascript">
+		$(document).ready(function() {
+			
+			load_comment();
+
+			function load_comment() {
+				var product_id = $('.cmt_product_id').val();
+				var _token = $('input[name="_token"]').val();
+				$.ajax({
+					url:"{{url('/load-comment')}}",
+					method:"POST",
+					data:{product_id:product_id, _token:_token},
+					success:function(data) {
+						$('#comment_show').html(data);
+					}
+				});
+			}
+
+			$('.send-comment').click(function(){
+				var product_id = $('.cmt_product_id').val();
+				var comment_content = $('.comment_content').val();
+				var comment_name = $('.comment_name').val();
+				var _token = $('input[name="_token"]').val();
+
+				$.ajax({
+					url:"{{url('/send-comment')}}",
+					method:"POST",
+					data:{product_id:product_id, comment_name:comment_name, comment_content:comment_content, _token:_token},
+					success:function(data) {
+						$('#notify_cmt').html('<span class="text text-success">Thêm bình luận thành công. Bình luận đang chờ duyệt</span>');
+						load_comment();
+						$('#notify_cmt').fadeOut(5000);
+						$('.comment_content').val('');
+						$('.comment_name').val('');
+					}
+				});
+			});
+		});
+	</script>
 </body>
 </html>
