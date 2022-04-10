@@ -43,6 +43,8 @@
                 </tbody>
             </table>
         </div>
+        
+        <button class="btn btn-primary" onclick="window.location.href=`{{URL::to('./product-detail/'.$content_value->product_id)}}`" >Bình Luận</button>
     </div>
 </section> 
 

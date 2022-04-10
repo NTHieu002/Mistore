@@ -134,7 +134,7 @@
                 <form action="">
                     @csrf
                     <input type="hidden" name="cmt_product_id" class="cmt_product_id" value="{{$value->product_id}}">
-                    <div id="comment_show"></div>
+                    <div id="comment_show" style="overflow: hidden;"></div>
                 </form>
 
                 <div id="notify_cmt"></div>

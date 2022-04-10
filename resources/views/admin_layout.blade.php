@@ -364,10 +364,11 @@
     <!-- Custom Theme Scripts -->
     <script src="{{asset('public/backend/build/js/custom.min.js')}}"></script>
     <script type="text/javascript">
+      
       $('.btn-rep-cmt').click(function(){
         var comment_id = $(this).data('comment_id');
         var comment = $('.rep-comment_'+comment_id).val();
-        var comment_product_id = $(this).data('product_id');
+        var comment_product_id = $(this).attr('id');
 
         $.ajax({
           url:"{{url('/reply-comment')}}",

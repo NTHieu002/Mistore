@@ -49,7 +49,7 @@
               $mess = Session::get('message');
               if($mess) {
                   echo $mess;
-                  Session::put('message',null);
+                  Session::put('message',' ');
               }
             ?>
             <!-- start project list -->
@@ -74,7 +74,14 @@
                     <a>{{$comment_value->comment_name_user}}</a>
                   </td>
                   <td style="line-height: 34px;">{{$comment_value->comment}}
-                   <br>
+                    <ol>
+                      @foreach ($comment_rep as $rep_cmt )
+                        @if ($rep_cmt->comment_parent == $comment_value->comment_id)
+                            <li>{{$rep_cmt->comment}}</li>
+                        @endif
+                      @endforeach
+                    </ol>
+
                     @if($comment_value->comment_status == 1)
                     <textarea class="form-control rep-comment_{{$comment_value->comment_id}}" rows="1"> </textarea>
                     @endif
